@@ -26,17 +26,21 @@ WORKDIR /app
 # 设置生产环境环境变量
 ENV NODE_ENV=production
 
-# 重新复制 package 文件以安装生产环境依赖
+# 复制 package 文件
 COPY package*.json ./
 
-# 安装生产环境依赖
-RUN npm ci --omit=dev
+# 安装生产环境依赖（包含 supergateway）
+RUN npm ci --omit=dev && \
+    npm install -g supergateway
 
-# 从第一阶段（builder）中只把编译好的 dist 目录复制过来
+# 从第一阶段（builder）中复制编译好的 dist 目录
 COPY --from=builder /app/dist ./dist
+
+# 复制启动脚本
+COPY start.sh ./
 
 # 暴露端口
 EXPOSE 8000
 
-# 启动命令：使用 supergateway 将 stdio 转 SSE，并提供健康检查
-CMD ["sh", "-c", "npx supergateway --stdio 'node dist/index.js' --port 8000 --healthPath /health"]
+# 启动命令
+CMD ["./start.sh"]
