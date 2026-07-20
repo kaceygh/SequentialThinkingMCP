@@ -1,1 +1,1 @@
-web: node dist/index.js --healthPath /health
+web: npx supergateway --stdio "node dist/index.js" --port 8000 --healthPath /health
