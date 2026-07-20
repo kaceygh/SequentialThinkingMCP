@@ -1,32 +1,24 @@
 {
   "name": "sequential-thinking-mcp",
   "version": "1.0.0",
-  "description": "Sequential Thinking MCP Server for dcdeploy",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Sequential Thinking MCP Server with Express v5",
+  "main": "build/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "prepare": "npm run build"
-  },
-  "keywords": [
-    "mcp",
-    "sequential-thinking",
-    "model-context-protocol"
-  ],
-  "author": "kaceygh",
-  "license": "MIT",
-  "engines": {
-    "node": "20.x"
+    "start": "node build/index.js",
+    "dev": "tsc --watch"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "supergateway": "^1.0.0"
+    "cors": "^2.8.5",
+    "express": "^5.0.0",
+    "supergateway": "1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "ts-node": "^10.9.0"
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
   }
 }
