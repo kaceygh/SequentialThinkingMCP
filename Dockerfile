@@ -43,4 +43,4 @@ COPY start.sh ./
 EXPOSE 8000
 
 # 启动命令
-CMD ["./start.sh"]
+CMD ["sh", "./start.sh"]
