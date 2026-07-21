@@ -1,24 +1,19 @@
 {
   "name": "sequential-thinking-mcp",
   "version": "1.0.0",
-  "description": "Sequential Thinking MCP Server with Express v5",
-  "main": "build/index.js",
+  "description": "Sequential Thinking MCP Server with built-in health check",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "start": "node build/index.js",
-    "dev": "tsc --watch"
+    "build": "node node_modules/typescript/bin/tsc",
+    "start": "node dist/index.js",
+    "dev": "node node_modules/typescript/bin/tsc --watch"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "cors": "^2.8.5",
-    "express": "^5.0.0",
-    "supergateway": "1.0.0"
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
-    "@types/node": "^20.11.0",
-    "typescript": "^5.3.3"
+    "@types/node": "^20.11.0"
   }
 }
