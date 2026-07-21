@@ -1,6 +1,7 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import http from 'http';
 
 // Create MCP Server
 const server = new Server(
@@ -49,7 +50,24 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   throw new Error(`Unknown tool: ${name}`);
 });
 
-// Start server
+// HTTP Health Check Server (for dcdeploy)
+const healthServer = http.createServer((req, res) => {
+  if (req.url === '/health' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'healthy' }));
+  } else {
+    res.writeHead(404);
+    res.end('Not Found');
+  }
+});
+
+const PORT = process.env.PORT || 8000;
+
+healthServer.listen(PORT, () => {
+  console.log(`Health check server running on port ${PORT}`);
+});
+
+// Start MCP Server (stdio)
 const transport = new StdioServerTransport();
 server.connect(transport);
 
