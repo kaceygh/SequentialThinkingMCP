@@ -122,6 +122,15 @@ const PORT = process.env.PORT || 8000;
 const START_TIME = Date.now();
 
 // dcdeploy health check
+// Root path responds OK for health probes that hit /
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    service: 'sequentialthinking-mcp',
+    endpoints: { health: '/health', mcp: '/mcp' }
+  });
+});
+
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
@@ -219,8 +228,9 @@ app.get('/sse', (req, res) => {
   req.on('close', () => clearInterval(timer));
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`SequentialThinkingMCP listening on :${PORT}`);
+const HOST = '0.0.0.0';
+const server = app.listen(PORT, HOST, () => {
+  console.log(`SequentialThinkingMCP listening on ${HOST}:${PORT}`);
   console.log(`  Health:   http://localhost:${PORT}/health`);
   console.log(`  MCP:      http://localhost:${PORT}/mcp  (Streamable HTTP)`);
   console.log(`  Legacy:   http://localhost:${PORT}/sse  (heartbeat only)`);
