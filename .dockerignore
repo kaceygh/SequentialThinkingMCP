@@ -6,14 +6,9 @@ npm-debug.log
 Dockerfile
 .dockerignore
 README.md
-*.md
+.github
+*.log
 .env
 .env.local
 dist
 build
-.vscode
-.idea
-*.swp
-*.swo
-.DS_Store
-Thumbs.db

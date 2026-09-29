@@ -1,0 +1,68 @@
+name: Deploy to Unikraft Cloud
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.js"
+      - "Dockerfile"
+      - "Kraftfile"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy-unikraft.yml"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "deploy or cleanup"
+        required: false
+        default: "deploy"
+        type: choice
+        options:
+          - deploy
+          - cleanup
+
+env:
+  INSTANCE_NAME: seqthinking-mcp
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'push' || inputs.action == 'deploy' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Unikraft CLI
+        uses: unikraft/setup-action@main
+
+      - name: Login to Unikraft Cloud
+        run: echo "${{ secrets.UKC_TOKEN }}" | unikraft login --token -
+
+      - name: Build image
+        run: unikraft build . --output kaceygarman/sequentialthinking-mcp:latest
+
+      - name: Deploy instance
+        run: |
+          # Remove old instance if exists (by name, ignore error if not found)
+          unikraft instance delete $INSTANCE_NAME 2>/dev/null || true
+          sleep 3
+          unikraft run --metro fra \
+            --name $INSTANCE_NAME \
+            -p 443:8000/http+tls \
+            -m 512M \
+            -e PORT=8000 \
+            --scale-to-zero policy=on,cooldown-time=60000 \
+            --image kaceygarman/sequentialthinking-mcp:latest
+
+  cleanup:
+    if: ${{ inputs.action == 'cleanup' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Unikraft CLI
+        uses: unikraft/setup-action@main
+
+      - name: Login to Unikraft Cloud
+        run: echo "${{ secrets.UKC_TOKEN }}" | unikraft login --token -
+
+      - name: Delete instance
+        run: unikraft instance delete $INSTANCE_NAME 2>/dev/null || true
