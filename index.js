@@ -83,7 +83,7 @@ function buildMcpServer() {
 
 // ---------- HTTP 服务（Express 适配器 + 手挂无状态 /mcp） ----------
 const PORT = process.env.PORT || 8000;
-const app = createMcpExpressApp();
+const app = createMcpExpressApp({ host: process.env.HOST_BIND || '0.0.0.0' });
 
 // 健康检查（兼容 dcdeploy 探测 /health；v2 无状态）
 app.get('/health', (_req, res) => {
